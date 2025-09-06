@@ -29,10 +29,19 @@
         "button_text": "Shop Now",
         "button_link": ""
       }
+    },
+    "thin_banner_hiring_VVCT49": {
+      "type": "thin-banner-hiring",
+      "name": "Thin Banner Hiring",
+      "settings": {
+        "title": "Sustainable, Ethically Made Activewear",
+        "title_desktop": "Sustainable, Ethically Made Clothes In Sizes XXS To 6XL"
+      }
     }
   },
   "order": [
     "main",
-    "main_banner_hiring_yzLKFX"
+    "main_banner_hiring_yzLKFX",
+    "thin_banner_hiring_VVCT49"
   ]
 }
