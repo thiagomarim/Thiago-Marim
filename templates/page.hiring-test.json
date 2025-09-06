@@ -11,13 +11,28 @@
   "sections": {
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "main_banner_hiring_yzLKFX": {
+      "type": "main-banner-hiring",
+      "name": "Main Banner Hiring",
+      "settings": {
+        "image": "shopify://shop_images/main-banner.jpg",
+        "mobile_image": "shopify://shop_images/main-banner-mobile.jpg",
+        "title": "The Gift Guide",
+        "text": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.",
+        "text_mobile": "Discover Joy: Your Ultimate Holiday Gift Destination.",
+        "button_text": "Shop Now",
+        "button_link": ""
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "main_banner_hiring_yzLKFX"
   ]
 }
