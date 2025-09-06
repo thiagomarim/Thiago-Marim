@@ -1,8 +1,10 @@
+/* Main container for thin banner hiring section */
 .thin-banner-hiring {
     width: 100%;
     background-color: var(--light-gray);
     padding: 1rem 4.35rem;
 
+    /* Title styling for h3 elements */
     :is(h3) {
         font-size: 1.4rem;
         font-weight: 400;
@@ -13,6 +15,7 @@
         letter-spacing: 0px;
     }
 
+    /* Mobile title - visible on small screens only */
     .title_mobile {
         display: block;
         @media screen and (min-width: 768px) {
@@ -20,6 +23,7 @@
         }
     }
 
+    /* Desktop title - hidden on mobile, visible on larger screens */
     .title_desktop {
         display: none;
         @media screen and (min-width: 768px) {
