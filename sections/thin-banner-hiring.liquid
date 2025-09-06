@@ -1,0 +1,48 @@
+{% comment %} 
+      Thin Banner Hiring Section
+      Displays a thin banner with a title and a button 
+{% endcomment %}
+
+{{ 'thin-banner-hiring.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign sec = section.settings
+%}
+
+<div class="thin-banner-hiring">
+  {% if sec.title %}
+    <h3 class="title_mobile">{{ sec.title }}</h3>
+  {% endif %}
+  {% if sec.title_desktop %}
+    <h3 class="title_desktop">{{ sec.title_desktop }}</h3>
+  {% endif %}
+</div>
+
+{% schema %}
+  {
+    "name": "Thin Banner Hiring",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Text Content"
+      }, {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Sustainable, Ethically Made Activewear"
+      }, {
+        "type": "text",
+        "id": "title_desktop",
+        "label": "Mobile Title",
+        "default": "Sustainable, Ethically Made Clothes In Sizes XXS To 6XL"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Thin Banner Hiring",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

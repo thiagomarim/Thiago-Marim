@@ -1,0 +1,30 @@
+.thin-banner-hiring {
+    width: 100%;
+    background-color: var(--light-gray);
+    padding: 1rem 4.35rem;
+
+    :is(h3) {
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: var(--black);
+        line-height: 13.42px;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0px;
+    }
+
+    .title_mobile {
+        display: block;
+        @media screen and (min-width: 768px) {
+            display: none;
+        }
+    }
+
+    .title_desktop {
+        display: none;
+        @media screen and (min-width: 768px) {
+            display: block;
+            font-size: 1.6rem;
+        }
+    }
+}
