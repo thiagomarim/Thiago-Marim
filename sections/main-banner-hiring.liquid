@@ -1,0 +1,91 @@
+{{ 'main-banner-hiring.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign sec = section.settings
+%}
+
+<div class="main-banner-hiring__content">
+  <img
+    class="main-banner-hiring__image"
+    src="{{ sec.image | image_url }}"
+    alt="{{ sec.image.alt }}"
+    width="auto"
+    height="auto">
+  <img
+    class="main-banner-hiring__mobile-image"
+    src="{{ sec.mobile_image | image_url }}"
+    alt="{{ sec.mobile_image.alt }}"
+    width="auto"
+    height="auto">
+
+  <div class="main-banner-hiring__content_text">
+    <div class="main-banner-hiring__content_text_content">
+      <h1 class="main-banner-hiring__title">
+        {{ sec.title }}
+      </h1>
+      <p class="main-banner-hiring__text text_desktop">
+        {{ sec.text }}
+      </p>
+      <p class="main-banner-hiring__text text_mobile">
+        {{ sec.text_mobile }}
+      </p>
+    </div>
+
+    <a href="{{ sec.button_link }}" class="main-banner-hiring__button">
+      <div class="main-banner-hiring__button_content">
+        <span>{{ sec.button_text }}</span>
+        <span class="main-banner-hiring__button_icon" aria-hidden="true">
+          {{ 'arrow-right.svg' | inline_asset_content }}
+        </span>
+      </div>
+    </a>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Main Banner Hiring",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "mobile_image",
+        "label": "Mobile Image"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "text",
+        "label": "Text"
+      },
+      {
+        "type": "text",
+        "id": "text_mobile",
+        "label": "Text Mobile"
+      }, {
+        "type": "text",
+        "id": "button_text",
+        "label": "Button Text"
+      }, {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button Link"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Main Banner Hiring",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}

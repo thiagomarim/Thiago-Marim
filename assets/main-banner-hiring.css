@@ -1,0 +1,131 @@
+.main-banner-hiring__content {
+    position: relative;
+    display: block;
+
+    .main-banner-hiring__image {
+        display: none;
+        @media screen and (min-width: 768px) {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    .main-banner-hiring__mobile-image {
+        display: block;
+        width: 100%;
+
+        @media screen and (min-width: 768px) {
+            display: none;
+        }
+    }
+
+    .main-banner-hiring__content_text {
+        display: flex;
+        flex-direction: column;
+        height: -webkit-fill-available;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        margin-top: 4.9rem;
+
+        position: absolute;
+        top: 0px;
+        z-index: 2;
+        padding: 15px;
+        color: var(--black);
+
+        @media screen and (min-width: 768px) {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .main-banner-hiring__content_text_content {
+            :is(h1) {
+                font-weight: 500;
+                font-size: 3rem;
+                margin-bottom: 2.4rem;
+                line-height: 100%;
+            }
+
+            .main-banner-hiring__text {
+                font-size: 1.6rem;
+                font-weight: 400;
+                line-height: 130%;
+            }
+
+            .text_mobile {
+                display: block;
+                width: 340px;
+                @media screen and (min-width: 768px) {
+                    display: none;
+                }
+            }
+
+            .text_desktop {
+                display: none;
+                @media screen and (min-width: 768px) {
+                    display: block;
+                }
+            }
+         }
+    }
+
+    .main-banner-hiring__button {
+        padding: 12px 24px;
+        background-color: var(--black);
+        color: var(--white);
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+        width: 19.3rem;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        margin-bottom: 3.9rem;
+
+        font-size: 1.6rem;
+        font-weight: 400;
+
+        /* Hover effect background */
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            background-color: var(--yellow);
+            transition: width 0.3s ease;
+            z-index: 1;
+        }
+
+        /* Button content layout */
+        .main-banner-hiring__button_content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2.98rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        
+        :is(svg path) {
+            fill: var(--white);
+        }
+
+        /* Hover state */
+        &:hover {
+            color: var(--black);
+
+            &::before {
+                width: 100%;
+            }
+
+            :is(svg path) {
+                fill: var(--black);
+            }
+        }
+    }
+}
