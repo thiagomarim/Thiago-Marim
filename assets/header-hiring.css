@@ -1,3 +1,4 @@
+/* Main header container */
 .header_container {
   display: flex;
   justify-content: space-between;
@@ -8,11 +9,13 @@
   z-index: 1000;
   box-shadow: 0px 2px 4px 0px #00000026;
 
+  /* Desktop styles */
   @media screen and (min-width: 768px) {
     padding: 1rem 5.78rem;
     box-shadow: none;
   }
 
+  /* Header title content */
   .header_container_content {
     :is(h1) {
       font-size: 1.6rem;
@@ -22,6 +25,7 @@
     }
   }
 
+  /* Header button styles */
   .header_container_button {
     .button {
       padding: 12px 24px;
@@ -37,6 +41,7 @@
       font-size: 1.6rem;
       font-weight: 400;
 
+      /* Hover effect background */
       &::before {
         content: "";
         position: absolute;
@@ -49,6 +54,7 @@
         z-index: 1;
       }
 
+      /* Button content layout */
       .button_content {
         display: flex;
         align-items: center;
@@ -58,6 +64,7 @@
         z-index: 2;
       }
 
+      /* Hover state */
       &:hover {
         color: #fff;
 
@@ -65,13 +72,14 @@
           width: 100%;
         }
 
-        svg path {
+        :is(svg path) {
           fill: #fff;
         }
       }
     }
   }
 
+  /* Mobile hamburger menu */
   .hamburger_menu {
     display: flex;
     flex-direction: column;
@@ -82,34 +90,42 @@
     z-index: 1001;
     position: relative;
 
+    /* Hide on desktop */
     @media screen and (min-width: 768px) {
       display: none;
     }
+
+    /* Icon positioning */
+    .hamburger_icon,
+    .close_icon {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+    }
+
+    .hamburger_icon {
+      opacity: 1;
+    }
+
+    .close_icon {
+      opacity: 0;
+    }
+
+    /* Hamburger menu animation */
+    &.active {
+      .hamburger_icon {
+        opacity: 0;
+      }
+
+      .close_icon {
+        opacity: 1;
+      }
+    }
   }
 
-  .hamburger_icon,
-  .close_icon {
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease;
-  }
-
-  .close_icon {
-    opacity: 0;
-  }
-
-  /* Hamburger Menu Animation */
-  .hamburger_menu.active .hamburger_icon {
-    opacity: 0;
-  }
-
-  .hamburger_menu.active .close_icon {
-    opacity: 1;
-  }
-
-  /* Desktop Content */
+  /* Desktop content - hidden on mobile */
   .desktop_content {
     display: none;
 
@@ -118,7 +134,7 @@
     }
   }
 
-  /* Menu mobile */
+  /* Mobile menu dropdown */
   .mobile_menu {
     display: flex;
     position: absolute;
@@ -132,85 +148,93 @@
     transition: all 0.3s ease;
     box-shadow: 0px -2px 4px 0px #00000026;
 
+    /* Hide on desktop */
     @media screen and (min-width: 768px) {
       display: none;
     }
-  }
 
-  .mobile_menu.active {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .mobile_menu_content {
-    padding: 20px;
-    text-align: center;
-    flex: 1;
-
-    @media screen and (min-width: 768px) {
-      flex: 0;
-    }
-  }
-
-  .mobile_menu_content {
-    :is(h1) {
-      margin-bottom: 1.6rem;
-      font-size: 1.6rem;
-      color: #000;
-    }
-  }
-
-  .mobile_menu_content .button {
-    padding: 12px 24px;
-    background-color: #fff544;
-    color: #000;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition: color 0.3s ease;
-    width: 24.4rem;
-    position: relative;
-    overflow: hidden;
-
-    font-size: 1.6rem;
-    font-weight: 400;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 0;
-      height: 100%;
-      background-color: #000;
-      transition: width 0.3s ease;
-      z-index: 1;
+    /* Active state - menu visible */
+    &.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
     }
 
-    .button_content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2.98rem;
-      position: relative;
-      z-index: 2;
+    /* Mobile menu content */
+    .mobile_menu_content {
+      padding: 20px;
+      text-align: center;
+      flex: 1;
+
+      @media screen and (min-width: 768px) {
+        flex: 0;
+      }
+
+      /* Mobile menu title */
+      :is(h1) {
+        margin-bottom: 1.6rem;
+        font-size: 1.6rem;
+        color: #000;
+      }
+
+      /* Mobile menu button */
+      .button {
+        padding: 12px 24px;
+        background-color: #fff544;
+        color: #000;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+        width: 24.4rem;
+        position: relative;
+        overflow: hidden;
+
+        font-size: 1.6rem;
+        font-weight: 400;
+
+        /* Hover effect background */
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 0;
+          height: 100%;
+          background-color: #000;
+          transition: width 0.3s ease;
+          z-index: 1;
+        }
+
+        /* Button content layout */
+        .button_content {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 2.98rem;
+          position: relative;
+          z-index: 2;
+        }
+
+        /* Hover state */
+        &:hover {
+          color: #fff;
+
+          &::before {
+            width: 100%;
+          }
+
+          :is(svg path) {
+            fill: #fff;
+          }
+        }
+      }
     }
-  }
-
-  .mobile_menu_content .button:hover {
-    color: #fff;
-
-    &::before {
-      width: 100%;
-    }
-  }
-
-  .mobile_menu_content .button:hover svg path {
-    fill: #fff;
   }
 }
 
+/* Mobile responsive styles */
 @media (max-width: 768px) {
+  /* Header image container */
   .header_container_image {
     flex: 1;
     display: flex;
@@ -218,6 +242,7 @@
     justify-content: center;
   }
 
+  /* Header image sizing */
   .header_container_image img {
     max-width: 150px;
     height: auto;

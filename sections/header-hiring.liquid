@@ -1,52 +1,85 @@
+{%- liquid
+  assign sec = section.settings
+-%}
+
+<!-- Header Hiring Section Styles and Scripts -->
 {{ 'header-hiring.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'header-hiring.js' | asset_url }}" defer></script>
 
-<header class="header_container">
-
-  <!-- Botão hambúrguer para mobile -->
-  <button class="hamburger_menu" id="hamburgerMenu">
-    <div class="hamburger_icon">
+<!-- Main Header Container -->
+<header class="header_container" role="banner">
+  
+  <!-- Mobile Hamburger Menu Button -->
+  <button 
+    class="hamburger_menu" 
+    id="hamburgerMenu"
+    aria-label="Toggle mobile menu"
+    aria-expanded="false"
+    aria-controls="mobileMenu"
+  >
+    <!-- Hamburger Icon (visible by default) -->
+    <div class="hamburger_icon" aria-hidden="true">
       {{ 'hamburguer.svg' | inline_asset_content }}
     </div>
-    <div class="close_icon">
+    <!-- Close Icon (hidden by default) -->
+    <div class="close_icon" aria-hidden="true">
       {{ 'close.svg' | inline_asset_content }}
     </div>
   </button>
 
+  <!-- Shop Logo/Image Section -->
   <div class="header_container_image">
     <img
-      src="{{ section.settings.shop_image | image_url }}"
-      alt="Shop Image"
+      src="{{ sec.shop_image | image_url }}"
+      alt="{{ sec.shop_image.alt | default: 'Shop Logo' }}"
       width="auto"
-      height="auto">
+      height="auto"
+      loading="eager"
+    >
   </div>
 
-  <!-- Conteúdo desktop -->
+  <!-- Desktop Header Content -->
   <div class="header_container_content desktop_content">
-    <h1>{{ section.settings.header_text }}</h1>
+    <h1>{{ sec.header_text }}</h1>
   </div>
 
+  <!-- Desktop Call-to-Action Button -->
   <div class="header_container_button desktop_content">
-    <a href="{{ section.settings.button_link }}" class="button">
+    <a 
+      href="{{ sec.button_link }}" 
+      class="button"
+      aria-label="{{ sec.button_text }}"
+    >
       <div class="button_content">
-        {{ section.settings.button_text }}
-        {{ 'arrow-right.svg' | inline_asset_content }}
+        <span>{{ sec.button_text }}</span>
+        <span class="button_icon" aria-hidden="true">
+          {{ 'arrow-right.svg' | inline_asset_content }}
+        </span>
       </div>
     </a>
   </div>
 
-  <!-- Menu mobile -->
-  <div class="mobile_menu" id="mobileMenu">
+  <!-- Mobile Navigation Menu -->
+  <nav class="mobile_menu" id="mobileMenu" role="navigation" aria-label="Mobile navigation">
     <div class="mobile_menu_content">
-      <h1>{{ section.settings.mobile_header_text }}</h1>
-      <a href="{{ section.settings.button_link }}" class="button">
+      <!-- Mobile Header Text -->
+      <h1>{{ sec.mobile_header_text }}</h1>
+      
+      <!-- Mobile Call-to-Action Button -->
+      <a 
+        href="{{ sec.button_link }}" 
+        class="button"
+        aria-label="{{ sec.button_text }}"
+      >
         <div class="button_content">
-          {{ section.settings.button_text }}
-          {{ 'arrow-right.svg' | inline_asset_content }}
+          <span>{{ sec.button_text }}</span>
+          <span class="button_icon" aria-hidden="true">
+            {{ 'arrow-right.svg' | inline_asset_content }}
+          </span>
         </div>
       </a>
     </div>
-  </div>
+  </nav>
 </header>
 
 {% schema %}
