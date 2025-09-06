@@ -1,7 +1,7 @@
 {{ 'header-hiring.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'header-hiring.js' | asset_url }}" defer></script>
 
-  <header class="header_container">
+<header class="header_container">
 
   <!-- Botão hambúrguer para mobile -->
   <button class="hamburger_menu" id="hamburgerMenu">
@@ -24,10 +24,12 @@
   </div>
 
   <div class="header_container_button desktop_content">
-    <a href="{{ section.settings.button_link }}" class="button">{{ section.settings.button_text }}</a>
-    <div>
-      {{ 'arrow-right.svg' | inline_asset_content }}
-    </div>
+    <a href="{{ section.settings.button_link }}" class="button">
+      <div class="button_content">
+        {{ section.settings.button_text }}
+        {{ 'arrow-right.svg' | inline_asset_content }}
+      </div>
+    </a>
   </div>
 
   <!-- Menu mobile -->

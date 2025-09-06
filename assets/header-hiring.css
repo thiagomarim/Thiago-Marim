@@ -8,9 +8,68 @@
   z-index: 1000;
   box-shadow: 0px 2px 4px 0px #00000026;
 
-
   @media screen and (min-width: 768px) {
-    padding: 2rem;
+    padding: 1rem 5.78rem;
+  }
+
+  .header_container_content {
+    :is(h1) {
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: #000;
+      margin: 0;
+    }
+  }
+
+  .header_container_button {
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #fff544;
+      color: #000;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+      width: 20.07rem;
+      position: relative;
+      overflow: hidden;
+
+      font-size: 1.6rem;
+      font-weight: 400;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 100%;
+        background-color: #000;
+        transition: width 0.3s ease;
+        z-index: 1;
+      }
+
+      .button_content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2.98rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      &:hover {
+        color: #fff;
+
+        &::before {
+          width: 100%;
+        }
+
+        svg path {
+          fill: #fff;
+        }
+      }
+    }
   }
 
   .hamburger_menu {
