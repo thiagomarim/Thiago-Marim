@@ -10,6 +10,7 @@
 
   @media screen and (min-width: 768px) {
     padding: 1rem 5.78rem;
+    box-shadow: none;
   }
 
   .header_container_content {
@@ -23,7 +24,6 @@
 
   .header_container_button {
     .button {
-      display: inline-block;
       padding: 12px 24px;
       background-color: #fff544;
       color: #000;
@@ -80,32 +80,33 @@
     cursor: pointer;
     padding: 5px;
     z-index: 1001;
+    position: relative;
 
     @media screen and (min-width: 768px) {
       display: none;
     }
   }
 
-  .hamburger_menu span {
-    width: 25px;
-    height: 3px;
-    background-color: black;
-    margin: 3px 0;
-    transition: 0.3s;
-    border-radius: 2px;
+  .hamburger_icon,
+  .close_icon {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
   }
 
-  /* Hamburger Menu Animation */
-  .hamburger_menu.active span:nth-child(1) {
-    transform: rotate(45deg) translate(4px, 5px);
-  }
-
-  .hamburger_menu.active span:nth-child(2) {
+  .close_icon {
     opacity: 0;
   }
 
-  .hamburger_menu.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(8px, -8px);
+  /* Hamburger Menu Animation */
+  .hamburger_menu.active .hamburger_icon {
+    opacity: 0;
+  }
+
+  .hamburger_menu.active .close_icon {
+    opacity: 1;
   }
 
   /* Desktop Content */
@@ -161,7 +162,6 @@
   }
 
   .mobile_menu_content .button {
-    display: inline-block;
     padding: 12px 24px;
     background-color: #fff544;
     color: #000;
