@@ -1,7 +1,9 @@
+/* Main container */
 .main-banner-hiring__content {
   position: relative;
   display: block;
 
+  /* Desktop image - hidden on mobile */
   .main-banner-hiring__image {
     display: none;
     @media screen and (min-width: 768px) {
@@ -10,6 +12,7 @@
     }
   }
 
+  /* Mobile image - hidden on desktop */
   .main-banner-hiring__mobile-image {
     display: block;
     width: 100%;
@@ -54,7 +57,9 @@
       gap: 5rem;
     }
 
+    /* Text content */
     .main-banner-hiring__content_text_content {
+      /* Main title */
       :is(h1) {
         font-weight: 500;
         font-size: 3rem;
@@ -72,6 +77,7 @@
         }
       }
 
+      /* Descriptive text */
       .main-banner-hiring__text {
         font-size: 1.6rem;
         font-weight: 400;
@@ -87,6 +93,7 @@
         }
       }
 
+      /* Mobile text */
       .text_mobile {
         display: block;
         width: 340px;
@@ -95,6 +102,7 @@
         }
       }
 
+      /* Desktop text */
       .text_desktop {
         display: none;
         @media screen and (min-width: 768px) {
@@ -104,6 +112,7 @@
     }
   }
 
+  /* Main button */
   .main-banner-hiring__button {
     padding: 12px 24px;
     background-color: var(--black);
@@ -148,6 +157,7 @@
       z-index: 2;
     }
 
+    /* SVG icon color */
     :is(svg path) {
       fill: var(--white);
     }
