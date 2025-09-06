@@ -1,0 +1,250 @@
+/* Main header container */
+.header_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 2.3rem 1.6rem;
+  position: relative;
+  z-index: 1000;
+  box-shadow: 0px 2px 4px 0px #00000026;
+
+  /* Desktop styles */
+  @media screen and (min-width: 768px) {
+    padding: 1rem 5.78rem;
+    box-shadow: none;
+  }
+
+  /* Header title content */
+  .header_container_content {
+    :is(h1) {
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: #000;
+      margin: 0;
+    }
+  }
+
+  /* Header button styles */
+  .header_container_button {
+    .button {
+      padding: 12px 24px;
+      background-color: #fff544;
+      color: #000;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+      width: 20.07rem;
+      position: relative;
+      overflow: hidden;
+
+      font-size: 1.6rem;
+      font-weight: 400;
+
+      /* Hover effect background */
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 100%;
+        background-color: #000;
+        transition: width 0.3s ease;
+        z-index: 1;
+      }
+
+      /* Button content layout */
+      .button_content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2.98rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Hover state */
+      &:hover {
+        color: #fff;
+
+        &::before {
+          width: 100%;
+        }
+
+        :is(svg path) {
+          fill: #fff;
+        }
+      }
+    }
+  }
+
+  /* Mobile hamburger menu */
+  .hamburger_menu {
+    display: flex;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 1001;
+    position: relative;
+
+    /* Hide on desktop */
+    @media screen and (min-width: 768px) {
+      display: none;
+    }
+
+    /* Icon positioning */
+    .hamburger_icon,
+    .close_icon {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+    }
+
+    .hamburger_icon {
+      opacity: 1;
+    }
+
+    .close_icon {
+      opacity: 0;
+    }
+
+    /* Hamburger menu animation */
+    &.active {
+      .hamburger_icon {
+        opacity: 0;
+      }
+
+      .close_icon {
+        opacity: 1;
+      }
+    }
+  }
+
+  /* Desktop content - hidden on mobile */
+  .desktop_content {
+    display: none;
+
+    @media screen and (min-width: 768px) {
+      display: flex;
+    }
+  }
+
+  /* Mobile menu dropdown */
+  .mobile_menu {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #f5f5f5;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0px -2px 4px 0px #00000026;
+
+    /* Hide on desktop */
+    @media screen and (min-width: 768px) {
+      display: none;
+    }
+
+    /* Active state - menu visible */
+    &.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Mobile menu content */
+    .mobile_menu_content {
+      padding: 20px;
+      text-align: center;
+      flex: 1;
+
+      @media screen and (min-width: 768px) {
+        flex: 0;
+      }
+
+      /* Mobile menu title */
+      :is(h1) {
+        margin-bottom: 1.6rem;
+        font-size: 1.6rem;
+        color: #000;
+      }
+
+      /* Mobile menu button */
+      .button {
+        padding: 12px 24px;
+        background-color: #fff544;
+        color: #000;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: color 0.3s ease;
+        width: 24.4rem;
+        position: relative;
+        overflow: hidden;
+
+        font-size: 1.6rem;
+        font-weight: 400;
+
+        /* Hover effect background */
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 0;
+          height: 100%;
+          background-color: #000;
+          transition: width 0.3s ease;
+          z-index: 1;
+        }
+
+        /* Button content layout */
+        .button_content {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 2.98rem;
+          position: relative;
+          z-index: 2;
+        }
+
+        /* Hover state */
+        &:hover {
+          color: #fff;
+
+          &::before {
+            width: 100%;
+          }
+
+          :is(svg path) {
+            fill: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  /* Header image container */
+  .header_container_image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Header image sizing */
+  .header_container_image img {
+    max-width: 150px;
+    height: auto;
+  }
+}
