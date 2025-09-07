@@ -1,0 +1,28 @@
+{{ 'product-grid-hiring.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign sec = section.settings
+-%}
+
+<div class="product-grid-hiring">
+  <div class="product-grid-hiring__container">
+   <h2>Product Grid Hiring</h2>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Product Grid Hiring",
+    "tag": "section",
+    "settings": [
+      
+    ],
+    "presets": [
+      {
+        "name": "Product Grid Hiring",
+        "settings": {
+        }
+      }
+    ]
+  }
+{% endschema %}
