@@ -1,4 +1,5 @@
 {{ 'product-grid-hiring.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-grid-hiring.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
   assign sec = section.settings
@@ -11,6 +12,11 @@
       <div
         class="product-grid-hiring__grid-item"
         style="--pos-x: {{ block.settings.icon-position-x | default: 0 }}; --pos-y: {{ block.settings.icon-position-y | default: 0 }};"
+        data-title="{{ block.settings.product.title | escape }}"
+        data-price="{{ block.settings.product.price | money_with_currency }}"
+        data-description="{{ block.settings.product.description | strip_html | escape }}"
+        data-image="{{ block.settings.product.featured_image | image_url }}"
+        data-handle="{{ block.settings.product.handle }}"
       >
         <img
           src="{{ block.settings.product.featured_image | image_url }}"
@@ -25,56 +31,88 @@
   </div>
 </div>
 
+<div class="product-grid-hiring__modal">
+  <div class="product-grid-hiring__modal-backdrop" data-close></div>
+  <div class="product-grid-hiring__modal-content">
+    <button class="product-grid-hiring__modal-close" type="button" aria-label="Close" data-close>×</button>
+    <div class="product-grid-hiring__modal-content__info">
+      <div class="product-grid-hiring__modal-content__info__media">
+        <img
+          alt=""
+          width="100%"
+          height="100%" />
+      </div>
+      <div class="product-grid-hiring__modal-content__info__text">
+        <h3 id="modal-title"></h3>
+        <span id="modal-price"></span>
+        <p id="modal-description"></p>
+      </div>
+
+    </div>
+    <div class="product-grid-hiring__modal-content__variants">
+      <div class="product-grid-hiring__modal-content__variants__color">
+        <h3>Color</h3>
+        <div class="variant-color-options" data-variant-colors></div>
+      </div>
+      <div class="product-grid-hiring__modal-content__variants__size">
+        <h3>Size</h3>
+        <div class="variant-size-select" data-variant-sizes></div>
+      </div>
+    </div>
+
+    <button class="product-grid-hiring__modal-content__actions__button">
+      <span>Add to Cart</span>
+    </button>
+  </div>
+</div>
+
 {% schema %}
-  {
-    "name": "Product Grid Hiring",
-    "tag": "section",
-    "settings": [
-      {
-        "type": "text",
-        "id": "title",
-        "label": "Title",
-        "default": "Tisso vison in the wild"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "product",
-        "name": "Product",
-        "settings": [
-          {
-            "type": "product",
-            "id": "product",
-            "label": "Product"
-          },
-          {
-            "type": "range",
-            "id": "icon-position-x",
-            "label": "Icon Position X",
-            "default": 60,
-            "min": 0,
-            "max": 100,
-            "step": 1,
-            "info": "0 = Left, 100 = Right"
-          },
-          {
-            "type": "range",
-            "id": "icon-position-y",
-            "label": "Icon Position Y",
-            "default": 60,
-            "min": 0,
-            "max": 100,
-            "step": 1,
-            "info": "0 = Top, 100 = Bottom"
-          }
-        ]
-      }
-    ],
-    "presets": [
-      {
-        "name": "Product Grid Hiring",
-        "settings": {}
-      }
-    ]
-  }
-{% endschema %}
+{
+  "name": "Product Grid Hiring",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Tisso vison in the wild"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        }, {
+          "type": "range",
+          "id": "icon-position-x",
+          "label": "Icon Position X",
+          "default": 60,
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "info": "0 = Left, 100 = Right"
+        }, {
+          "type": "range",
+          "id": "icon-position-y",
+          "label": "Icon Position Y",
+          "default": 60,
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "info": "0 = Top, 100 = Bottom"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Grid Hiring",
+      "settings": {}
+    }
+  ]
+}{% endschema %}
