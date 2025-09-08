@@ -48,7 +48,7 @@
         <p id="modal-description"></p>
       </div>
 
-    </div>
+    </div>  
     <div class="product-grid-hiring__modal-content__variants">
       <div class="product-grid-hiring__modal-content__variants__color">
         <h3>Color</h3>
@@ -56,7 +56,17 @@
       </div>
       <div class="product-grid-hiring__modal-content__variants__size">
         <h3>Size</h3>
-        <div class="variant-size-select" data-variant-sizes></div>
+        <div class="variant-size-select" data-variant-sizes>
+          <div class="variant-size-select__trigger">
+            <span class="variant-size-select__text">Choose your size</span>
+            <div class="variant-size-select__arrow">
+              {{ 'arrow-down.svg' | inline_asset_content }}
+            </div>
+          </div>
+          <ul class="variant-size-select__dropdown" style="display: none;">
+            <!-- Options will be populated by JavaScript -->
+          </ul>
+        </div>
       </div>
     </div>
 
