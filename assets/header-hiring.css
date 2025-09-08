@@ -237,6 +237,7 @@
     line-height: normal;
 
     :is(a) {
+      display: block;
       height: 1.9rem;
     }
   }

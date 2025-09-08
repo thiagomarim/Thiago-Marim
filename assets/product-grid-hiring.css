@@ -283,7 +283,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start; /* default: left align when no selection */
             position: relative;
             min-height: 40.44px;
 
@@ -297,6 +297,8 @@
               letter-spacing: -2%;
             }
           }
+
+          
 
           /* Arrow clickable area */
           .variant-size-select__arrow-container {
@@ -372,6 +374,11 @@
               }
             }
           }
+        }
+
+        /* Center text only after a selection is made */
+        &.has-selection .variant-size-select__trigger {
+          justify-content: center;
         }
 
         /* Rotate arrow when open */

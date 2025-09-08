@@ -137,6 +137,9 @@ window.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    // Ensure alignment reflects no selection state on (re)render
+    sizeWrap.classList.remove("has-selection");
+
     // Compute valid sizes (filtered by color when applicable)
     const variants = currentProduct.variants.filter((v) => {
       if (colorIndex === -1) return true;
@@ -169,6 +172,8 @@ window.addEventListener("DOMContentLoaded", () => {
         li.classList.add("is-selected");
         // Clear any size-related error
         clearFieldError(sizeWrap);
+        // Center-align trigger text when a size is selected
+        sizeWrap.classList.add("has-selection");
       });
       dropdown.appendChild(li);
     });
