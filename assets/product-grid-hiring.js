@@ -58,12 +58,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Fetch a product by handle and return the first available variant id (fallback: first variant)
   async function getFirstAvailableVariantIdByHandle(handle) {
-    const res = await fetch(`/products/${handle}.js`, { headers: { Accept: "application/json" } });
+    const res = await fetch(`/products/${handle}.js`, {
+      headers: { Accept: "application/json" },
+    });
     if (!res.ok) throw new Error(`Failed to load product by handle: ${handle}`);
     const prod = await res.json();
     const available = prod.variants?.find((v) => v.available);
     return (available || prod.variants?.[0])?.id || null;
   }
+
   const toggleDropdown = (open) => {
     if (!sizeWrap) return;
     const dropdown = sizeWrap.querySelector(".variant-size-select__dropdown");
@@ -113,8 +116,14 @@ window.addEventListener("DOMContentLoaded", () => {
   // Determine if current selections satisfy the bundle rule
   function shouldBundle(selectedColor, selectedSize, indexes) {
     const { colorIndex, sizeIndex } = indexes;
-    const colorOk = colorIndex !== -1 && selectedColor && normalize(selectedColor) === BUNDLE_COLOR_VALUE;
-    const sizeOk = sizeIndex !== -1 && selectedSize && normalize(selectedSize) === BUNDLE_SIZE_VALUE;
+    const colorOk =
+      colorIndex !== -1 &&
+      selectedColor &&
+      normalize(selectedColor) === BUNDLE_COLOR_VALUE;
+    const sizeOk =
+      sizeIndex !== -1 &&
+      selectedSize &&
+      normalize(selectedSize) === BUNDLE_SIZE_VALUE;
     return Boolean(colorOk && sizeOk);
   }
 
@@ -139,24 +148,34 @@ window.addEventListener("DOMContentLoaded", () => {
     const { colorIndex, sizeIndex } = indexes;
     return product.variants.find((v) => {
       const colorMatches =
-        colorIndex === -1 || (selectedColor && v[`option${colorIndex + 1}`] === selectedColor);
+        colorIndex === -1 ||
+        (selectedColor && v[`option${colorIndex + 1}`] === selectedColor);
       const sizeMatches =
-        sizeIndex === -1 || (selectedSize && v[`option${sizeIndex + 1}`] === selectedSize);
+        sizeIndex === -1 ||
+        (selectedSize && v[`option${sizeIndex + 1}`] === selectedSize);
       return colorMatches && sizeMatches;
     });
   }
 
   // Encapsulate the logic for adding the bonus product when eligible
-  async function addBonusProductIfEligible(indexes, selectedColor, selectedSize) {
+  async function addBonusProductIfEligible(
+    indexes,
+    selectedColor,
+    selectedSize
+  ) {
     const eligible = shouldBundle(selectedColor, selectedSize, indexes);
     if (!eligible) return;
 
     try {
-      const bonusVariantId = await getFirstAvailableVariantIdByHandle(BONUS_PRODUCT_HANDLE);
+      const bonusVariantId = await getFirstAvailableVariantIdByHandle(
+        BONUS_PRODUCT_HANDLE
+      );
       if (bonusVariantId) {
         await addVariantToCart(bonusVariantId, 1);
       } else {
-        console.warn("Bonus product variant not found. Skipping bonus add-to-cart.");
+        console.warn(
+          "Bonus product variant not found. Skipping bonus add-to-cart."
+        );
       }
     } catch (err) {
       console.warn("Failed to add bonus product:", err);
@@ -281,7 +300,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const dropdown = sizeWrap.querySelector(".variant-size-select__dropdown");
     const trigger = sizeWrap.querySelector(".variant-size-select__trigger");
-    const arrowTrigger = sizeWrap.querySelector(".variant-size-select__arrow-container");
+    const arrowTrigger = sizeWrap.querySelector(
+      ".variant-size-select__arrow-container"
+    );
     const textSpan = sizeWrap.querySelector(".variant-size-select__text");
 
     // Populate size items
@@ -294,7 +315,9 @@ window.addEventListener("DOMContentLoaded", () => {
         toggleDropdown(false);
 
         // Mark selection
-        dropdown.querySelectorAll("li").forEach((item) => item.classList.remove("is-selected"));
+        dropdown
+          .querySelectorAll("li")
+          .forEach((item) => item.classList.remove("is-selected"));
         li.classList.add("is-selected");
         // Clear any size-related error
         clearFieldError(sizeWrap);
@@ -346,7 +369,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("keydown", onKeydown);
   }
 
-  // Close modal
+  // Close the product modal and restore scroll.
   function closeModal() {
     modal.classList.remove("is-open");
     // Re-enable page scroll when modal closes
@@ -360,86 +383,111 @@ window.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeModal();
   }
 
-  // Open modal when clicking the plus icon and load product data
-  grid.addEventListener("click", async (e) => {
-    const plus = e.target.closest(".product-grid-hiring__grid-plus-icon");
-    if (!plus) return;
-    const item = plus.closest(".product-grid-hiring__grid-item");
-    if (!item) return;
+  // Bind grid click to open modal and load product data.
+  function initGridClickHandler() {
+    // Open modal when clicking the plus icon and load product data
+    grid.addEventListener("click", async (e) => {
+      const plus = e.target.closest(".product-grid-hiring__grid-plus-icon");
+      if (!plus) return;
+      const item = plus.closest(".product-grid-hiring__grid-item");
+      if (!item) return;
 
-    const data = {
-      title: item.getAttribute("data-title") || "",
-      price: item.getAttribute("data-price") || "",
-      description: item.getAttribute("data-description") || "",
-      image: item.getAttribute("data-image") || "",
-    };
-    openModal(data);
+      const data = {
+        title: item.getAttribute("data-title") || "",
+        price: item.getAttribute("data-price") || "",
+        description: item.getAttribute("data-description") || "",
+        image: item.getAttribute("data-image") || "",
+      };
+      openModal(data);
 
-    // Fetch product JSON by handle to build variant selectors
-    const handle = item.getAttribute("data-handle");
-    if (!handle) return;
-    try {
-      const res = await fetch(`/products/${handle}.js`, {
-        headers: { Accept: "application/json" },
-      });
-      if (!res.ok) throw new Error("Failed to load product");
-      currentProduct = await res.json();
+      // Fetch product JSON by handle to build variant selectors
+      const handle = item.getAttribute("data-handle");
+      if (!handle) return;
+      try {
+        const res = await fetch(`/products/${handle}.js`, {
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) throw new Error("Failed to load product");
+        currentProduct = await res.json();
 
-      const colorOption = currentProduct.options.find((o) => /color/i.test(o.name));
-      const colors = colorOption ? colorOption.values : [];
-      renderColorButtons(colors);
-      renderSizeOptions();
-    } catch (err) {
-      console.error(err);
-    }
-  });
+        const colorOption = currentProduct.options.find((o) =>
+          /color/i.test(o.name)
+        );
+        const colors = colorOption ? colorOption.values : [];
+        renderColorButtons(colors);
+        renderSizeOptions();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
 
-  // Close modal via backdrop, close button, and clicks outside content
-  backdrop?.addEventListener("click", closeModal);
-  closeBtn?.addEventListener("click", closeModal);
-  modal.addEventListener("click", (e) => {
-    if (!content) return;
-    if (!content.contains(e.target)) closeModal();
-  });
+  // Bind modal events: backdrop/close/outside click, and add-to-cart.
+  function bindModalEvents() {
+    // Close modal via backdrop, close button, and clicks outside content
+    backdrop?.addEventListener("click", closeModal);
+    closeBtn?.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (!content) return;
+      if (!content.contains(e.target)) closeModal();
+    });
 
-  // Add to cart with color and size validations
-  addToCartBtn?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    if (!currentProduct) return;
+    // Add to cart with color and size validations
+    addToCartBtn?.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!currentProduct) return;
 
-    // Step 1: validate selections
-    const validation = validateSelections(currentProduct, selectedColor, selectedSize);
-    if (!validation.ok) return;
-
-    // Step 2: find matching variant
-    const matchingVariant = findMatchingVariant(
-      currentProduct,
-      selectedColor,
-      selectedSize,
-      validation.indexes
-    );
-
-    if (!matchingVariant) {
-      showFieldError(sizeWrap, "This variant is unavailable. Please choose different options.");
-      return;
-    }
-
-    try {
-      // Always add the currently selected product first
-      await addVariantToCart(matchingVariant.id, 1);
-
-      // Step 3: attempt to add bonus product when eligible
-      await addBonusProductIfEligible(validation.indexes, selectedColor, selectedSize);
-
-      // Step 4: wrap-up UX
-      closeModal();
-      document.dispatchEvent(
-        new CustomEvent("product:added", { detail: { variantId: matchingVariant.id } })
+      // Step 1: validate selections
+      const validation = validateSelections(
+        currentProduct,
+        selectedColor,
+        selectedSize
       );
-      window.location.href = "/cart";
-    } catch (err) {
-      console.error(err);
-      alert("Could not add to cart. Please try again.");
-    }
-  });
+      if (!validation.ok) return;
+
+      // Step 2: find matching variant
+      const matchingVariant = findMatchingVariant(
+        currentProduct,
+        selectedColor,
+        selectedSize,
+        validation.indexes
+      );
+
+      if (!matchingVariant) {
+        showFieldError(
+          sizeWrap,
+          "This variant is unavailable. Please choose different options."
+        );
+        return;
+      }
+
+      try {
+        // Always add the currently selected product first
+        await addVariantToCart(matchingVariant.id, 1);
+
+        // Step 3: attempt to add bonus product when eligible
+        await addBonusProductIfEligible(
+          validation.indexes,
+          selectedColor,
+          selectedSize
+        );
+
+        // Step 4: wrap-up UX
+        closeModal();
+        document.dispatchEvent(
+          new CustomEvent("product:added", {
+            detail: { variantId: matchingVariant.id },
+          })
+        );
+        window.location.href = "/cart";
+      } catch (err) {
+        console.error(err);
+        alert("Could not add to cart. Please try again.");
+      }
+    });
+  }
+
+  // Initialize handlers
+  initGridClickHandler();
+  bindModalEvents();
 });
