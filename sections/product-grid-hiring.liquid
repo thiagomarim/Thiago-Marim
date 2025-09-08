@@ -1,11 +1,11 @@
-{% comment %}
-  Product Grid Hiring Section
-  Displays a product grid with plus icon and modal for product details
-  Get variant selectors for color and size options from the product
-  Supports call-to-action button
-  Supports backdrop click to close
-  Supports close button
-  Supports mobile and desktop views
+{% comment %} 
+    Product Grid Hiring Section
+    Displays a product grid with plus icon and modal for product details
+    Get variant selectors for color and size options from the product
+    Supports call-to-action button
+    Supports backdrop click to close
+    Supports close button
+    Supports mobile and desktop views 
 {% endcomment %}
 
 {{ 'product-grid-hiring.css' | asset_url | stylesheet_tag }}
@@ -13,37 +13,40 @@
 
 {%- liquid
   assign sec = section.settings
-  assing blocks = section.blocks
+  assign blocks = section.blocks
 -%}
 
 <!-- Container: Product Grid Hiring -->
 <div class="product-grid-hiring__container">
-  <h2>{{ sec.title }}</h2>
-  
+  {% if sec.title %}
+    <h2>{{ sec.title }}</h2>
+  {% endif %}
+
   <!-- Grid of products -->
   <div class="product-grid-hiring__grid">
     {% for block in blocks %}
-      <div
-        class="product-grid-hiring__grid-item"
-        style="--pos-x: {{ block.settings.icon-position-x | default: 0 }}; --pos-y: {{ block.settings.icon-position-y | default: 0 }};"
-        data-title="{{ block.settings.product.title | escape }}"
-        data-price="{{ block.settings.product.price | money_with_currency }}"
-        data-description="{{ block.settings.product.description | strip_html | escape }}"
-        data-image="{{ block.settings.product.featured_image | image_url }}"
-        data-handle="{{ block.settings.product.handle }}"
-      >
-        <!-- Product image -->
-        <img
-          src="{{ block.settings.product.featured_image | image_url }}"
-          alt="{{ block.settings.product.featured_image.alt }}"
-          width="100%"
-          height="100%">
+      {% if block.settings.product != blank %}
+        <div
+          class="product-grid-hiring__grid-item"
+          style="--pos-x: {{ block.settings.icon-position-x | default: 0 }}; --pos-y: {{ block.settings.icon-position-y | default: 0 }};"
+          data-title="{{ block.settings.product.title | escape }}"
+          data-price="{{ block.settings.product.price | money_with_currency }}"
+          data-description="{{ block.settings.product.description | strip_html | escape }}"
+          data-image="{{ block.settings.product.featured_image | image_url }}"
+          data-handle="{{ block.settings.product.handle }}">
+            <!-- Product image -->
+          <img
+            src="{{ block.settings.product.featured_image | image_url }}"
+            alt="{{ block.settings.product.featured_image.alt }}"
+            width="100%"
+            height="100%">
 
-        <!-- Floating plus icon trigger -->
-        <div class="product-grid-hiring__grid-plus-icon">
-          {{ 'plus.svg' | inline_asset_content }}
+          <!-- Floating plus icon trigger -->
+          <div class="product-grid-hiring__grid-plus-icon">
+            {{ 'plus.svg' | inline_asset_content }}
+          </div>
         </div>
-      </div>
+      {% endif %}
     {% endfor %}
   </div>
 </div>
@@ -55,7 +58,11 @@
 
   <!-- Modal content wrapper -->
   <div class="product-grid-hiring__modal-content">
-    <button class="product-grid-hiring__modal-close" type="button" aria-label="Close" data-close>×</button>
+    <button
+      class="product-grid-hiring__modal-close"
+      type="button"
+      aria-label="Close"
+      data-close>×</button>
     <div class="product-grid-hiring__modal-content__info">
       <!-- Media preview -->
       <div class="product-grid-hiring__modal-content__info__media">
@@ -72,7 +79,7 @@
         <p id="modal-description"></p>
       </div>
 
-    </div>  
+    </div>
 
     <!-- Variant selectors -->
     <div class="product-grid-hiring__modal-content__variants">
@@ -109,62 +116,63 @@
 </div>
 
 {% schema %}
-{
-  "name": "Product Grid Hiring",
-  "tag": "section",
-  "settings": [
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Title",
-      "default": "Tisso vison in the wild"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "product",
-      "name": "Product",
-      "settings": [
-        {
-          "type": "header",
-          "content": "Product Settings"
-        },
-        {
-          "type": "product",
-          "id": "product",
-          "label": "Product",
-          "info": "Select the product to display in the grid"
-        },
-        {
-          "type": "header",
-          "content": "Icon Settings"
-        },
-        {
-          "type": "range",
-          "id": "icon-position-x",
-          "label": "Icon Position X",
-          "default": 60,
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "info": "0 = Left, 100 = Right"
-        }, {
-          "type": "range",
-          "id": "icon-position-y",
-          "label": "Icon Position Y",
-          "default": 60,
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "info": "0 = Top, 100 = Bottom"
-        }
-      ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "Product Grid Hiring",
-      "settings": {}
-    }
-  ]
-}{% endschema %}
+  {
+    "name": "Product Grid Hiring",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Tisso vison in the wild"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "product",
+        "name": "Product",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Product Settings"
+          },
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Product",
+            "info": "Select the product to display in the grid"
+          },
+          {
+            "type": "header",
+            "content": "Icon Settings"
+          },
+          {
+            "type": "range",
+            "id": "icon-position-x",
+            "label": "Icon Position X",
+            "default": 60,
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "info": "0 = Left, 100 = Right"
+          }, {
+            "type": "range",
+            "id": "icon-position-y",
+            "label": "Icon Position Y",
+            "default": 60,
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "info": "0 = Top, 100 = Bottom"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product Grid Hiring",
+        "settings": {}
+      }
+    ]
+  }
+{% endschema %}
