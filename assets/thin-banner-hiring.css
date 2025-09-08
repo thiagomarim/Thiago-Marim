@@ -2,7 +2,7 @@
 .thin-banner-hiring {
     width: 100%;
     background-color: var(--light-gray);
-    padding: 1rem 4.35rem;
+    padding: 1rem 0rem;
 
     /* Title styling for h3 elements */
     :is(h3) {

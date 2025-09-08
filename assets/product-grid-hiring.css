@@ -149,6 +149,7 @@
           line-height: 120%;
           color: var(--black);
           margin-bottom: 2rem;
+          letter-spacing: 0;
         }
 
         /* Price */
@@ -158,7 +159,7 @@
           font-weight: 400;
           line-height: 120%;
           color: var(--black);
-          margin-bottom: 1.2rem;
+          letter-spacing: 0;
         }
 
         /* Short description */
@@ -172,6 +173,7 @@
           -webkit-line-clamp: 4;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          margin-top: 0.6rem;
 
           @media screen and (min-width: 768px) {
             font-size: 1.4rem;
@@ -263,7 +265,6 @@
       /* Size dropdown */
       .variant-size-select {
         position: relative;
-        margin-bottom: 5rem;
 
         /* Dropdown layout */
         .variant-size-select__container {
@@ -272,7 +273,7 @@
 
           /* Dropdown trigger */
           .variant-size-select__trigger {
-            width: 100%;
+            width: 21.6rem;
             border: none;
             box-shadow: 0 0 0 0.5px #000;
             padding: 10.65px 1.3rem;
@@ -293,6 +294,7 @@
               line-height: 100%;
               color: var(--black);
               text-align: left;
+              letter-spacing: -2%;
             }
           }
 
@@ -331,11 +333,22 @@
             box-shadow: 0 0 0 0.5px #000;
             border-top: none;
             z-index: 10;
-            max-height: 200px;
+            max-height: 9.5rem;
             overflow-y: auto;
             list-style: none;
             margin: 0;
             padding: 0;
+
+            border-right: 1px solid #000;
+
+            /* Hide scrollbar visuals but keep scrolling */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+            &::-webkit-scrollbar {
+              /* Chrome/Safari */
+              width: 0;
+              height: 0;
+            }
 
             /* Size option item */
             :is(li) {
@@ -379,7 +392,7 @@
       width: 100%;
       position: relative;
       white-space: nowrap;
-      margin-bottom: 3.9rem;
+      margin: 5rem 0 3.9rem 0;
 
       font-size: 1.6rem;
       font-weight: 400;
@@ -428,4 +441,18 @@
       }
     }
   }
+}
+
+/* Inline validation error for variant fields */
+.variant-error {
+  margin: 0.4rem 0 0 0;
+  font-size: 1.2rem;
+  line-height: 140%;
+  color: #c62828;
+}
+
+/* Prevent background scroll when modal is open */
+html.no-scroll,
+body.no-scroll {
+  overflow: hidden;
 }

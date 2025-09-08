@@ -20,7 +20,10 @@
     src="{{ sec.image | image_url }}"
     alt="{{ sec.image.alt }}"
     width="auto"
-    height="auto">
+    height="auto"
+    loading="eager"
+    fetchpriority="high"
+    >
   
   {% comment %} Mobile image - hidden on desktop {% endcomment %}
   <img
@@ -28,7 +31,10 @@
     src="{{ sec.mobile_image | image_url }}"
     alt="{{ sec.mobile_image.alt }}"
     width="auto"
-    height="auto">
+    height="auto"
+    loading="eager"
+    fetchpriority="high"
+    >
 
   {% comment %} Text content wrapper {% endcomment %}
   <div class="main-banner-hiring__content_text">

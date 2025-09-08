@@ -47,6 +47,26 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Inline error helpers
+  const showFieldError = (containerEl, message) => {
+    if (!containerEl) return;
+    let errorEl = containerEl.nextElementSibling;
+    if (!errorEl || !errorEl.classList?.contains("variant-error")) {
+      errorEl = document.createElement("p");
+      errorEl.className = "variant-error";
+      containerEl.after(errorEl);
+    }
+    errorEl.textContent = message || "";
+  };
+
+  const clearFieldError = (containerEl) => {
+    if (!containerEl) return;
+    const errorEl = containerEl.nextElementSibling;
+    if (errorEl && errorEl.classList?.contains("variant-error")) {
+      errorEl.remove();
+    }
+  };
+
   const getOptionIndexes = (product) => {
     const optionNames = product.options.map((o) => o.name);
     return {
@@ -82,6 +102,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
         // Reset size selection when color changes
         selectedSize = null;
+        // Clear any color-related error
+        clearFieldError(colorWrap);
         renderSizeOptions();
       });
 
@@ -145,6 +167,8 @@ window.addEventListener("DOMContentLoaded", () => {
         // Mark selection
         dropdown.querySelectorAll("li").forEach((item) => item.classList.remove("is-selected"));
         li.classList.add("is-selected");
+        // Clear any size-related error
+        clearFieldError(sizeWrap);
       });
       dropdown.appendChild(li);
     });
@@ -175,6 +199,9 @@ window.addEventListener("DOMContentLoaded", () => {
     selectedSize = null;
     if (colorWrap) colorWrap.innerHTML = "";
     if (sizeWrap) sizeWrap.innerHTML = "";
+    // Clear lingering errors from previous opens
+    clearFieldError(colorWrap);
+    clearFieldError(sizeWrap);
 
     setMedia(mediaImg, data.image, data.title);
     setText(titleEl, data.title);
@@ -182,12 +209,18 @@ window.addEventListener("DOMContentLoaded", () => {
     setText(descEl, data.description);
 
     modal.classList.add("is-open");
+    // Lock page scroll while modal is open
+    document.documentElement.classList.add("no-scroll");
+    document.body.classList.add("no-scroll");
     document.addEventListener("keydown", onKeydown);
   }
 
   // Close modal
   function closeModal() {
     modal.classList.remove("is-open");
+    // Re-enable page scroll when modal closes
+    document.documentElement.classList.remove("no-scroll");
+    document.body.classList.remove("no-scroll");
     document.removeEventListener("keydown", onKeydown);
   }
 
@@ -247,11 +280,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // Validate selections when options exist
     if (colorIndex !== -1 && !selectedColor) {
-      alert("Please choose a color.");
+      showFieldError(colorWrap, "Please choose a color.");
       return;
     }
     if (sizeIndex !== -1 && !selectedSize) {
-      alert("Please choose a size.");
+      showFieldError(sizeWrap, "Please choose a size.");
       return;
     }
 
@@ -265,7 +298,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 
     if (!matchingVariant) {
-      alert("This variant is unavailable. Please choose different options.");
+      showFieldError(sizeWrap, "This variant is unavailable. Please choose different options.");
       return;
     }
 

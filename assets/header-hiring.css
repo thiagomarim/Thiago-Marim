@@ -7,7 +7,7 @@
   padding: 2.3rem 1.6rem;
   position: relative;
   z-index: 1000;
-  box-shadow: 0px 2px 4px 0px #00000026;
+  
 
   /* Desktop styles */
   @media screen and (min-width: 768px) {
@@ -142,12 +142,11 @@
     top: 100%;
     left: 0;
     right: 0;
-    background-color: var(--light-gray);
+    background-color: #f2f2f2;
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0px -2px 4px 0px #00000026;
 
     /* Hide on desktop */
     @media screen and (min-width: 768px) {
@@ -236,11 +235,38 @@
   .header_container_image {
     letter-spacing: normal;
     line-height: normal;
+
+    :is(a) {
+      height: 1.9rem;
+    }
   }
+}
+
+/* Header background when mobile menu is open */
+.header_container.menu-open {
+  background-color: #f7f7f7;
 }
 
 /* Mobile responsive styles */
 @media (max-width: 768px) {
+  /* Ensure mobile menu sits below header shadow layer */
+  .mobile_menu {
+    z-index: 0;
+  }
+
+  /* Draw shadow above children when menu is open */
+  .header_container.menu-open::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    box-shadow: 0px 2px 4px 0px #00000026;
+    pointer-events: none;
+    z-index: 1;
+  }
+
   /* Header image container */
   .header_container_image {
     flex: 1;
