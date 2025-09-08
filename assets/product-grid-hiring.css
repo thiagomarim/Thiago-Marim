@@ -216,6 +216,7 @@
       .variant-color-options {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
+        position: relative; /* allow moving highlight */
       }
 
       /* Color option button */
@@ -223,7 +224,7 @@
         --swatch-w: 5.81px;
         border: none;
         box-shadow: 0 0 0 0.5px #000;
-        background: #fff;
+        background: transparent; /* background comes from moving highlight */
         color: #000;
         padding: 1.2rem 1.6rem 1.2rem calc(var(--swatch-w) + 16px);
         font-size: 1.6rem;
@@ -233,11 +234,10 @@
         justify-content: flex-start;
         position: relative;
         min-height: 40.44px;
-        transition: color 300ms ease;
+        transition: background-color 300ms ease, color 300ms ease, transform 150ms ease;
 
         &.is-active {
-          background: var(--black);
-          color: #fff;
+          color: #fff; /* text turns white when active over black highlight */
         }
 
         /* Color swatch strip */
@@ -260,6 +260,19 @@
         font-weight: 400;
         line-height: 100%;
         letter-spacing: -2%;
+      }
+
+      /* Moving background highlight that slides between buttons */
+      .variant-color-highlight {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        background: var(--black);
+        opacity: 0;
+        transition: transform 300ms ease, width 300ms ease, height 300ms ease, opacity 150ms ease;
+        z-index: 0;
       }
 
       /* Size dropdown */
@@ -297,8 +310,6 @@
               letter-spacing: -2%;
             }
           }
-
-          
 
           /* Arrow clickable area */
           .variant-size-select__arrow-container {

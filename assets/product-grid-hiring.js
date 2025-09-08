@@ -168,6 +168,12 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!colorWrap) return;
     colorWrap.innerHTML = "";
 
+    // Create moving highlight layer once
+    const highlight = document.createElement("div");
+    highlight.className = "variant-color-highlight";
+    colorWrap.appendChild(highlight);
+    let highlightReady = false; // first click should not animate sizing/position
+
     colors.forEach((color) => {
       const btn = document.createElement("button");
       btn.type = "button";
@@ -187,6 +193,38 @@ window.addEventListener("DOMContentLoaded", () => {
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-pressed", "true");
+
+        // Position moving highlight to the active button
+        const btnRect = btn.getBoundingClientRect();
+        const wrapRect = colorWrap.getBoundingClientRect();
+        const width = btnRect.width;
+        const height = btnRect.height;
+        const x = btnRect.left - wrapRect.left + colorWrap.scrollLeft;
+        const y = btnRect.top - wrapRect.top + colorWrap.scrollTop;
+        if (!highlightReady) {
+          // First click: apply instantly without transition
+          const previousTransition = highlight.style.transition;
+          highlight.style.transition = "none";
+          highlight.style.width = `${width}px`;
+          highlight.style.height = `${height}px`;
+          highlight.style.transform = `translate(${x}px, ${y}px)`;
+          highlight.style.opacity = "0";
+          // force reflow then restore transitions for next moves
+          // eslint-disable-next-line no-unused-expressions
+          highlight.offsetWidth;
+          highlight.style.transition = previousTransition;
+          // subtle fade-in so it doesn't feel abrupt
+          requestAnimationFrame(() => {
+            highlight.style.opacity = "1";
+          });
+          highlightReady = true;
+        } else {
+          // Subsequent clicks: animate movement
+          highlight.style.width = `${width}px`;
+          highlight.style.height = `${height}px`;
+          highlight.style.transform = `translate(${x}px, ${y}px)`;
+          highlight.style.opacity = "1";
+        }
 
         // Reset size selection when color changes
         selectedSize = null;
