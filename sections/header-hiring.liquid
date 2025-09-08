@@ -27,23 +27,28 @@
 
   <!-- Shop Logo/Image Section -->
   <div class="header_container_image">
-    <a href="{{ routes.root_url }}">
-      <img
-        src="{{ sec.shop_image | image_url }}"
-        alt="{{ sec.shop_image.alt | default: 'Shop Logo' }}"
-        width="auto"
-        height="auto"
-        loading="eager">
-    </a>
+    {% if sec.shop_image != blank %}
+      <a href="{{ routes.root_url }}">
+        <img
+          src="{{ sec.shop_image | image_url }}"
+          alt="{{ sec.shop_image.alt | default: 'Shop Logo' }}"
+          width="auto"
+          height="auto"
+          loading="eager">
+      </a>
+    {% endif %}
   </div>
 
   <!-- Desktop Header Content -->
   <div class="header_container_content desktop_content">
-    <h1>{{ sec.header_text }}</h1>
+    {% if sec.header_text != blank %}
+      <h2>{{ sec.header_text }}</h2>
+    {% endif %}
   </div>
 
   <!-- Desktop Call-to-Action Button -->
   <div class="header_container_button desktop_content">
+    {% if sec.button_text != blank %}
     <a
       href="{{ sec.button_link }}"
       class="button"
@@ -53,8 +58,9 @@
         <span class="button_icon" aria-hidden="true">
           {{ 'arrow-right.svg' | inline_asset_content }}
         </span>
-      </div>
-    </a>
+        </div>
+      </a>
+    {% endif %}
   </div>
 
   
@@ -68,9 +74,12 @@
   aria-label="Mobile navigation">
   <div class="mobile_menu_content">
     <!-- Mobile Header Text -->
-    <h1>{{ sec.mobile_header_text }}</h1>
+    {% if sec.mobile_header_text != blank %}
+      <h1>{{ sec.mobile_header_text }}</h1>
+    {% endif %}
 
     <!-- Mobile Call-to-Action Button -->
+    {% if sec.button_text != blank %}
     <a
       href="{{ sec.button_link }}"
       class="button"
@@ -80,8 +89,9 @@
         <span class="button_icon" aria-hidden="true">
           {{ 'arrow-right.svg' | inline_asset_content }}
         </span>
-      </div>
-    </a>
+        </div>
+      </a>
+    {% endif %}
   </div>
 </nav>
 

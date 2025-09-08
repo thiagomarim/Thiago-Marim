@@ -19,7 +19,7 @@
 
   /* Header title content */
   .header_container_content {
-    :is(h1) {
+    :is(h2) {
       font-size: 1.6rem;
       font-weight: 400;
       color: var(--black);

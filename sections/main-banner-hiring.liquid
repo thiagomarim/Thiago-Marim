@@ -1,7 +1,7 @@
-{% comment %}
-  Main Banner Hiring Section
-  Displays a hero banner with image, title, text, and call-to-action button
-  Supports separate images for desktop and mobile views
+{% comment %} 
+    Main Banner Hiring Section
+    Displays a hero banner with image, title, text, and call-to-action button
+    Supports separate images for desktop and mobile views 
 {% endcomment %}
 
 {{ 'main-banner-hiring.css' | asset_url | stylesheet_tag }}
@@ -11,65 +11,70 @@
   assign sec = section.settings
 %}
 
-{% comment %} Main banner container {% endcomment %}
-<div class="main-banner-hiring__content">
-  
-  {% comment %} Desktop image - hidden on mobile {% endcomment %}
-  <img
-    class="main-banner-hiring__image"
-    src="{{ sec.image | image_url }}"
-    alt="{{ sec.image.alt }}"
-    width="auto"
-    height="auto"
-    loading="eager"
-    fetchpriority="high"
-    >
-  
-  {% comment %} Mobile image - hidden on desktop {% endcomment %}
-  <img
-    class="main-banner-hiring__mobile-image"
-    src="{{ sec.mobile_image | image_url }}"
-    alt="{{ sec.mobile_image.alt }}"
-    width="auto"
-    height="auto"
-    loading="eager"
-    fetchpriority="high"
-    >
+{% if sec.image != blank %}
+  {% comment %} Main banner container {% endcomment %}
+  <div class="main-banner-hiring__content">
 
-  {% comment %} Text content wrapper {% endcomment %}
-  <div class="main-banner-hiring__content_text">
-    
-    {% comment %} Text content container {% endcomment %}
-    <div class="main-banner-hiring__content_text_content">
-      
-      {% comment %} Main banner title {% endcomment %}
-      <h1 class="main-banner-hiring__title">
-        {{ sec.title }}
-      </h1>
-      
-      {% comment %} Desktop text - hidden on mobile {% endcomment %}
-      <p class="main-banner-hiring__text text_desktop">
-        {{ sec.text }}
-      </p>
-      
-      {% comment %} Mobile text - hidden on desktop {% endcomment %}
-      <p class="main-banner-hiring__text text_mobile">
-        {{ sec.text_mobile }}
-      </p>
-    </div>
+      {% comment %} Desktop image - hidden on mobile {% endcomment %}
+    <img
+      class="main-banner-hiring__image"
+      src="{{ sec.image | image_url }}"
+      alt="{{ sec.image.alt }}"
+      width="auto"
+      height="auto"
+      loading="eager"
+      fetchpriority="high">
 
-    {% comment %} Call-to-action button {% endcomment %}
-    <a href="{{ sec.button_link }}" class="main-banner-hiring__button">
-      <div class="main-banner-hiring__button_content">
-        <span>{{ sec.button_text }}</span>
-        <span class="main-banner-hiring__button_icon" aria-hidden="true">
-          {{ 'arrow-right.svg' | inline_asset_content }}
-        </span>
+      {% comment %} Mobile image - hidden on desktop {% endcomment %}
+    <img
+      class="main-banner-hiring__mobile-image"
+      src="{{ sec.mobile_image | image_url }}"
+      alt="{{ sec.mobile_image.alt }}"
+      width="auto"
+      height="auto"
+      loading="eager"
+      fetchpriority="high">
+
+    {% comment %} Text content wrapper {% endcomment %}
+    <div class="main-banner-hiring__content_text">
+
+      {% comment %} Text content container {% endcomment %}
+      <div class="main-banner-hiring__content_text_content">
+
+        {% comment %} Main banner title {% endcomment %}
+        {% if sec.title != blank %}
+          <h1 class="main-banner-hiring__title">
+            {{ sec.title }}
+          </h1>
+        {% endif %}
+        {% comment %} Desktop text - hidden on mobile {% endcomment %}
+        {% if sec.text != blank %}
+          <p class="main-banner-hiring__text text_desktop">
+            {{ sec.text }}
+          </p>
+        {% endif %}
+        {% comment %} Mobile text - hidden on desktop {% endcomment %}
+        {% if sec.text_mobile != blank %}
+          <p class="main-banner-hiring__text text_mobile">
+            {{ sec.text_mobile }}
+          </p>
+        {% endif %}
       </div>
-    </a>
-  </div>
-</div>
 
+      {% comment %} Call-to-action button {% endcomment %}
+      {% if sec.button_text != blank %}
+        <a href="{{ sec.button_link }}" class="main-banner-hiring__button">
+          <div class="main-banner-hiring__button_content">
+            <span>{{ sec.button_text }}</span>
+            <span class="main-banner-hiring__button_icon" aria-hidden="true">
+              {{ 'arrow-right.svg' | inline_asset_content }}
+            </span>
+          </div>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
 {% schema %}
   {
     "name": "Main Banner Hiring",
@@ -94,40 +99,34 @@
       {
         "type": "header",
         "content": "Content Settings"
-      },
-      {
+      }, {
         "type": "text",
         "id": "title",
         "label": "Banner Title",
         "default": "The Gift Guide",
         "info": "Main heading displayed on the banner"
-      },
-      {
+      }, {
         "type": "textarea",
         "id": "text",
         "label": "Desktop Text",
         "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.",
         "info": "Description text shown on desktop devices"
-      },
-      {
+      }, {
         "type": "textarea",
         "id": "text_mobile",
         "label": "Mobile Text",
         "default": "Discover Joy: Your Ultimate Holiday Gift Destination.",
         "info": "Shorter description text optimized for mobile devices"
-      },
-      {
+      }, {
         "type": "header",
         "content": "Call-to-Action Button"
-      },
-      {
+      }, {
         "type": "text",
         "id": "button_text",
         "label": "Button Text",
         "default": "Shop Now",
         "info": "Text displayed on the call-to-action button"
-      },
-      {
+      }, {
         "type": "url",
         "id": "button_link",
         "label": "Button Link",
