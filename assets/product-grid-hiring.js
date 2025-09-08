@@ -5,7 +5,7 @@ window.addEventListener("DOMContentLoaded", () => {
   if (!grid || !modal) return;
 
   // Bundle rule configuration (editable)
-  // If the shopper selects Color = "Black" AND Size = "Medium",
+  // If the shopper selects Color = "Black" AND Size = "M",
   // we will also add the bonus product below to the cart.
   const BUNDLE_COLOR_VALUE = "black"; // comparison is case-insensitive
   const BUNDLE_SIZE_VALUE = "m"; // comparison is case-insensitive
@@ -104,6 +104,64 @@ window.addEventListener("DOMContentLoaded", () => {
       sizeIndex: optionNames.findIndex((n) => /size/i.test(n)),
     };
   };
+
+  // Normalize user-entered/option strings for safe comparison
+  function normalize(value) {
+    return (value || "").toString().toLowerCase().trim();
+  }
+
+  // Determine if current selections satisfy the bundle rule
+  function shouldBundle(selectedColor, selectedSize, indexes) {
+    const { colorIndex, sizeIndex } = indexes;
+    const colorOk = colorIndex !== -1 && selectedColor && normalize(selectedColor) === BUNDLE_COLOR_VALUE;
+    const sizeOk = sizeIndex !== -1 && selectedSize && normalize(selectedSize) === BUNDLE_SIZE_VALUE;
+    return Boolean(colorOk && sizeOk);
+  }
+
+  // Validate that required selections are present
+  function validateSelections(product, selectedColor, selectedSize) {
+    const { colorIndex, sizeIndex } = getOptionIndexes(product);
+
+    if (colorIndex !== -1 && !selectedColor) {
+      showFieldError(colorWrap, "Please choose a color.");
+      return { ok: false };
+    }
+    if (sizeIndex !== -1 && !selectedSize) {
+      showFieldError(sizeWrap, "Please choose a size.");
+      return { ok: false };
+    }
+
+    return { ok: true, indexes: { colorIndex, sizeIndex } };
+  }
+
+  // Find a product variant that matches the user's selections
+  function findMatchingVariant(product, selectedColor, selectedSize, indexes) {
+    const { colorIndex, sizeIndex } = indexes;
+    return product.variants.find((v) => {
+      const colorMatches =
+        colorIndex === -1 || (selectedColor && v[`option${colorIndex + 1}`] === selectedColor);
+      const sizeMatches =
+        sizeIndex === -1 || (selectedSize && v[`option${sizeIndex + 1}`] === selectedSize);
+      return colorMatches && sizeMatches;
+    });
+  }
+
+  // Encapsulate the logic for adding the bonus product when eligible
+  async function addBonusProductIfEligible(indexes, selectedColor, selectedSize) {
+    const eligible = shouldBundle(selectedColor, selectedSize, indexes);
+    if (!eligible) return;
+
+    try {
+      const bonusVariantId = await getFirstAvailableVariantIdByHandle(BONUS_PRODUCT_HANDLE);
+      if (bonusVariantId) {
+        await addVariantToCart(bonusVariantId, 1);
+      } else {
+        console.warn("Bonus product variant not found. Skipping bonus add-to-cart.");
+      }
+    } catch (err) {
+      console.warn("Failed to add bonus product:", err);
+    }
+  }
 
   // Render color buttons
   function renderColorButtons(colors) {
@@ -311,63 +369,35 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     if (!currentProduct) return;
 
-    const { colorIndex, sizeIndex } = getOptionIndexes(currentProduct);
+    // Step 1: validate selections
+    const validation = validateSelections(currentProduct, selectedColor, selectedSize);
+    if (!validation.ok) return;
 
-    // Validate selections when options exist
-    if (colorIndex !== -1 && !selectedColor) {
-      showFieldError(colorWrap, "Please choose a color.");
-      return;
-    }
-    if (sizeIndex !== -1 && !selectedSize) {
-      showFieldError(sizeWrap, "Please choose a size.");
-      return;
-    }
-
-    // Find the variant that matches the user's selections
-    const matchingVariant = currentProduct.variants.find((v) => {
-      const colorMatches =
-        colorIndex === -1 || (selectedColor && v[`option${colorIndex + 1}`] === selectedColor);
-      const sizeMatches =
-        sizeIndex === -1 || (selectedSize && v[`option${sizeIndex + 1}`] === selectedSize);
-      return colorMatches && sizeMatches;
-    });
+    // Step 2: find matching variant
+    const matchingVariant = findMatchingVariant(
+      currentProduct,
+      selectedColor,
+      selectedSize,
+      validation.indexes
+    );
 
     if (!matchingVariant) {
       showFieldError(sizeWrap, "This variant is unavailable. Please choose different options.");
       return;
     }
 
-    // Determine if bundle condition is met (case-insensitive): Color=Black AND Size=Medium
-    const colorMatchesBundle =
-      colorIndex !== -1 && selectedColor && selectedColor.toLowerCase().trim() === BUNDLE_COLOR_VALUE;
-    const sizeMatchesBundle =
-      sizeIndex !== -1 && selectedSize && selectedSize.toLowerCase().trim() === BUNDLE_SIZE_VALUE;
-    const shouldBundleBonusProduct = Boolean(colorMatchesBundle && sizeMatchesBundle);
-
-    console.log(selectedColor, selectedSize);
-    console.log(colorMatchesBundle, sizeMatchesBundle);
-
     try {
       // Always add the currently selected product first
       await addVariantToCart(matchingVariant.id, 1);
 
-      // If bundle rule passes, also add the bonus product (Soft Winter Jacket)
-      if (shouldBundleBonusProduct) {
-        // Note: If your store's handle differs, update BONUS_PRODUCT_HANDLE at the top.
-        const bonusVariantId = await getFirstAvailableVariantIdByHandle(BONUS_PRODUCT_HANDLE);
-        if (bonusVariantId) {
-          await addVariantToCart(bonusVariantId, 1);
-        } else {
-          console.warn("Bonus product variant not found. Skipping bonus add-to-cart.");
-        }
-      }
+      // Step 3: attempt to add bonus product when eligible
+      await addBonusProductIfEligible(validation.indexes, selectedColor, selectedSize);
 
-      // Feedback and integration with the theme's cart UI (fire once both adds finish)
+      // Step 4: wrap-up UX
       closeModal();
       document.dispatchEvent(
         new CustomEvent("product:added", { detail: { variantId: matchingVariant.id } })
       );
-      // Redirect after both requests fully complete
       window.location.href = "/cart";
     } catch (err) {
       console.error(err);
