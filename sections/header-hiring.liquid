@@ -57,31 +57,33 @@
     </a>
   </div>
 
-  <!-- Mobile Navigation Menu -->
-  <nav
-    class="mobile_menu"
-    id="mobileMenu"
-    role="navigation"
-    aria-label="Mobile navigation">
-    <div class="mobile_menu_content">
-      <!-- Mobile Header Text -->
-      <h1>{{ sec.mobile_header_text }}</h1>
-
-      <!-- Mobile Call-to-Action Button -->
-      <a
-        href="{{ sec.button_link }}"
-        class="button"
-        aria-label="{{ sec.button_text }}">
-        <div class="button_content">
-          <span>{{ sec.button_text }}</span>
-          <span class="button_icon" aria-hidden="true">
-            {{ 'arrow-right.svg' | inline_asset_content }}
-          </span>
-        </div>
-      </a>
-    </div>
-  </nav>
+  
 </header>
+
+<!-- Mobile Navigation Menu (placed outside header to appear below) -->
+<nav
+  class="mobile_menu"
+  id="mobileMenu"
+  role="navigation"
+  aria-label="Mobile navigation">
+  <div class="mobile_menu_content">
+    <!-- Mobile Header Text -->
+    <h1>{{ sec.mobile_header_text }}</h1>
+
+    <!-- Mobile Call-to-Action Button -->
+    <a
+      href="{{ sec.button_link }}"
+      class="button"
+      aria-label="{{ sec.button_text }}">
+      <div class="button_content">
+        <span>{{ sec.button_text }}</span>
+        <span class="button_icon" aria-hidden="true">
+          {{ 'arrow-right.svg' | inline_asset_content }}
+        </span>
+      </div>
+    </a>
+  </div>
+</nav>
 
 {% schema %}
   {
