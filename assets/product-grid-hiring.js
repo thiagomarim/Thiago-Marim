@@ -4,6 +4,14 @@ window.addEventListener("DOMContentLoaded", () => {
   const modal = document.querySelector(".product-grid-hiring__modal");
   if (!grid || !modal) return;
 
+  // Bundle rule configuration (editable)
+  // If the shopper selects Color = "Black" AND Size = "Medium",
+  // we will also add the bonus product below to the cart.
+  const BUNDLE_COLOR_VALUE = "black"; // comparison is case-insensitive
+  const BUNDLE_SIZE_VALUE = "m"; // comparison is case-insensitive
+  // Change this handle if your store uses a different URL handle for this product.
+  const BONUS_PRODUCT_HANDLE = "dark-winter-jacket";
+
   // Modal elements
   const backdrop = modal.querySelector(".product-grid-hiring__modal-backdrop");
   const closeBtn = modal.querySelector(".product-grid-hiring__modal-close");
@@ -34,6 +42,28 @@ window.addEventListener("DOMContentLoaded", () => {
     imgEl.src = src || "";
     imgEl.alt = alt || "";
   };
+  // POST /cart/add.js for a single variant
+  async function addVariantToCart(variantId, quantity = 1) {
+    const res = await fetch("/cart/add.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ id: variantId, quantity }),
+    });
+    if (!res.ok) throw new Error("Failed to add to cart");
+    return res.json();
+  }
+
+  // Fetch a product by handle and return the first available variant id (fallback: first variant)
+  async function getFirstAvailableVariantIdByHandle(handle) {
+    const res = await fetch(`/products/${handle}.js`, { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error(`Failed to load product by handle: ${handle}`);
+    const prod = await res.json();
+    const available = prod.variants?.find((v) => v.available);
+    return (available || prod.variants?.[0])?.id || null;
+  }
   const toggleDropdown = (open) => {
     if (!sizeWrap) return;
     const dropdown = sizeWrap.querySelector(".variant-size-select__dropdown");
@@ -307,24 +337,37 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Standard Shopify add-to-cart request
-    try {
-      const res = await fetch("/cart/add.js", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ id: matchingVariant.id, quantity: 1 }),
-      });
-      if (!res.ok) throw new Error("Failed to add to cart");
-      await res.json();
+    // Determine if bundle condition is met (case-insensitive): Color=Black AND Size=Medium
+    const colorMatchesBundle =
+      colorIndex !== -1 && selectedColor && selectedColor.toLowerCase().trim() === BUNDLE_COLOR_VALUE;
+    const sizeMatchesBundle =
+      sizeIndex !== -1 && selectedSize && selectedSize.toLowerCase().trim() === BUNDLE_SIZE_VALUE;
+    const shouldBundleBonusProduct = Boolean(colorMatchesBundle && sizeMatchesBundle);
 
-      // Feedback and integration with the theme's cart UI
+    console.log(selectedColor, selectedSize);
+    console.log(colorMatchesBundle, sizeMatchesBundle);
+
+    try {
+      // Always add the currently selected product first
+      await addVariantToCart(matchingVariant.id, 1);
+
+      // If bundle rule passes, also add the bonus product (Soft Winter Jacket)
+      if (shouldBundleBonusProduct) {
+        // Note: If your store's handle differs, update BONUS_PRODUCT_HANDLE at the top.
+        const bonusVariantId = await getFirstAvailableVariantIdByHandle(BONUS_PRODUCT_HANDLE);
+        if (bonusVariantId) {
+          await addVariantToCart(bonusVariantId, 1);
+        } else {
+          console.warn("Bonus product variant not found. Skipping bonus add-to-cart.");
+        }
+      }
+
+      // Feedback and integration with the theme's cart UI (fire once both adds finish)
       closeModal();
       document.dispatchEvent(
         new CustomEvent("product:added", { detail: { variantId: matchingVariant.id } })
       );
+      // Redirect after both requests fully complete
       window.location.href = "/cart";
     } catch (err) {
       console.error(err);
