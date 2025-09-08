@@ -34,7 +34,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
         btn.classList.add('is-active');
         btn.setAttribute('aria-pressed', 'true');
-        renderSizeOptions();
       });
       colorWrap.appendChild(btn);
     });
@@ -121,6 +120,7 @@ window.addEventListener('DOMContentLoaded', () => {
       const colorOption = currentProduct.options.find(o => /color/i.test(o.name));
       const colors = colorOption ? colorOption.values : [];
       renderColorButtons(colors);
+      renderSizeOptions();
       // Wait for user to choose a color, then sizes will render
     } catch (err) {
       console.error(err);
