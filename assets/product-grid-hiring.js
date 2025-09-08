@@ -14,6 +14,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const descEl = modal.querySelector("#modal-description");
   const colorWrap = modal.querySelector("[data-variant-colors]");
   const sizeWrap = modal.querySelector("[data-variant-sizes]");
+  const addToCartBtn = modal.querySelector(
+    ".product-grid-hiring__modal-content__actions__button"
+  );
   let currentProduct = null;
   let selectedColor = null;
   let selectedSize = null;
@@ -36,6 +39,9 @@ window.addEventListener("DOMContentLoaded", () => {
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-pressed", "true");
+        // Reset selected size when color changes and re-render sizes for this color
+        selectedSize = null;
+        renderSizeOptions();
       });
       colorWrap.appendChild(btn);
     });
@@ -140,6 +146,11 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function openModal(data) {
+    // Reset state each time modal opens
+    selectedColor = null;
+    selectedSize = null;
+    if (colorWrap) colorWrap.innerHTML = "";
+    if (sizeWrap) sizeWrap.innerHTML = "";
     if (mediaImg) {
       mediaImg.src = data.image || "";
       mediaImg.alt = data.title || "";
@@ -202,6 +213,62 @@ window.addEventListener("DOMContentLoaded", () => {
     if (!content) return;
     if (!content.contains(e.target)) {
       closeModal();
+    }
+  });
+
+  // Add to cart handler
+  addToCartBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    if (!currentProduct) return;
+
+    const optionNames = currentProduct.options.map((o) => o.name);
+    const colorIndex = optionNames.findIndex((n) => /color/i.test(n));
+    const sizeIndex = optionNames.findIndex((n) => /size/i.test(n));
+
+    // Validate selections when options exist
+    if (colorIndex !== -1 && !selectedColor) {
+      alert("Please choose a color.");
+      return;
+    }
+    if (sizeIndex !== -1 && !selectedSize) {
+      alert("Please choose a size.");
+      return;
+    }
+
+    // Find matching variant by selected options
+    const matchingVariant = currentProduct.variants.find((v) => {
+      const colorMatches =
+        colorIndex === -1 || (selectedColor && v[`option${colorIndex + 1}`] === selectedColor);
+      const sizeMatches =
+        sizeIndex === -1 || (selectedSize && v[`option${sizeIndex + 1}`] === selectedSize);
+      return colorMatches && sizeMatches;
+    });
+
+    if (!matchingVariant) {
+      alert("This variant is unavailable. Please choose different options.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/cart/add.js", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ id: matchingVariant.id, quantity: 1 }),
+      });
+      if (!res.ok) throw new Error("Failed to add to cart");
+      await res.json();
+      // Optionally close modal or give feedback
+      closeModal();
+      // Dispatch a custom event so theme cart UI can react if listening
+      document.dispatchEvent(new CustomEvent("product:added", { detail: { variantId: matchingVariant.id } }));
+      // Redirect to cart after successful add
+      window.location.href = "/cart";
+    } catch (err) {
+      console.error(err);
+      alert("Could not add to cart. Please try again.");
     }
   });
 });

@@ -70,9 +70,14 @@
       </div>
     </div>
 
-    <button class="product-grid-hiring__modal-content__actions__button">
-      <span>Add to Cart</span>
-    </button>
+    <a href="{{ sec.button_link }}" class="product-grid-hiring__modal-content__actions__button">
+      <div class="product-grid-hiring__modal-content__actions__button_content">
+        <span>Add to Cart</span>
+        <span class="product-grid-hiring__modal-content__actions__button_icon" aria-hidden="true">
+          {{ 'arrow-right.svg' | inline_asset_content }}
+        </span>
+      </div>
+    </a>
   </div>
 </div>
 
