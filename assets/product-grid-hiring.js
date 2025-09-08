@@ -1,8 +1,10 @@
 window.addEventListener("DOMContentLoaded", () => {
+  // Basic references for grid and modal. If missing, do nothing.
   const grid = document.querySelector(".product-grid-hiring__grid");
   const modal = document.querySelector(".product-grid-hiring__modal");
   if (!grid || !modal) return;
 
+  // Modal elements
   const backdrop = modal.querySelector(".product-grid-hiring__modal-backdrop");
   const closeBtn = modal.querySelector(".product-grid-hiring__modal-close");
   const content = modal.querySelector(".product-grid-hiring__modal-content");
@@ -17,69 +19,109 @@ window.addEventListener("DOMContentLoaded", () => {
   const addToCartBtn = modal.querySelector(
     ".product-grid-hiring__modal-content__actions__button"
   );
+
+  // Current product state and user selections
   let currentProduct = null;
   let selectedColor = null;
   let selectedSize = null;
 
+  // Small utilities
+  const setText = (el, value) => {
+    if (el) el.textContent = value || "";
+  };
+  const setMedia = (imgEl, src, alt) => {
+    if (!imgEl) return;
+    imgEl.src = src || "";
+    imgEl.alt = alt || "";
+  };
+  const toggleDropdown = (open) => {
+    if (!sizeWrap) return;
+    const dropdown = sizeWrap.querySelector(".variant-size-select__dropdown");
+    if (!dropdown) return;
+    if (open) {
+      sizeWrap.classList.add("is-open");
+      dropdown.style.display = "block";
+    } else {
+      sizeWrap.classList.remove("is-open");
+      dropdown.style.display = "none";
+    }
+  };
+
+  const getOptionIndexes = (product) => {
+    const optionNames = product.options.map((o) => o.name);
+    return {
+      colorIndex: optionNames.findIndex((n) => /color/i.test(n)),
+      sizeIndex: optionNames.findIndex((n) => /size/i.test(n)),
+    };
+  };
+
+  // Render color buttons
   function renderColorButtons(colors) {
     if (!colorWrap) return;
     colorWrap.innerHTML = "";
-    colors.forEach((color, index) => {
+
+    colors.forEach((color) => {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "variant-color-btn";
-      // Insert swatch on the left and label text
-      btn.innerHTML = `<span class="variant-color-btn__swatch" style="background:${color}"></span><span class="variant-color-btn__label">${color}</span>`;
       btn.setAttribute("aria-pressed", "false");
+      btn.innerHTML = `
+        <span class="variant-color-btn__swatch" style="background:${color}"></span>
+        <span class="variant-color-btn__label">${color}</span>
+      `;
+
       btn.addEventListener("click", () => {
         selectedColor = color;
+        // Update active-state UI
         [...colorWrap.querySelectorAll("button")].forEach((b) => {
           b.classList.remove("is-active");
           b.setAttribute("aria-pressed", "false");
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-pressed", "true");
-        // Reset selected size when color changes and re-render sizes for this color
+
+        // Reset size selection when color changes
         selectedSize = null;
         renderSizeOptions();
       });
+
       colorWrap.appendChild(btn);
     });
+
     // Clear sizes until the user selects a color
     if (sizeWrap) sizeWrap.innerHTML = "";
   }
 
+  // Render size dropdown based on the selected color
   function renderSizeOptions() {
     if (!sizeWrap || !currentProduct) return;
 
-    // Clear existing content and rebuild
+    const { colorIndex, sizeIndex } = getOptionIndexes(currentProduct);
+
+    // Build base HTML for the size selector
     sizeWrap.innerHTML = `
-    <div class="variant-size-select__container">
-      <div class="variant-size-select__trigger">
-        <span class="variant-size-select__text">Choose your size</span>
-      </div>
-      <div class="variant-size-select__arrow-container">
-       <div class="variant-size-select__arrow">
-          <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 2L8 8L14 2" stroke="black" stroke-width="1.5" stroke-linecap="square"/>
-          </svg>
+      <div class="variant-size-select__container">
+        <div class="variant-size-select__trigger">
+          <span class="variant-size-select__text">Choose your size</span>
         </div>
-      </div>
-      <ul class="variant-size-select__dropdown" style="display: none;">
-          <!-- Options will be populated below -->
-        </ul>
+        <div class="variant-size-select__arrow-container">
+          <div class="variant-size-select__arrow">
+            <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 2L8 8L14 2" stroke="black" stroke-width="1.5" stroke-linecap="square"/>
+            </svg>
+          </div>
+        </div>
+        <ul class="variant-size-select__dropdown" style="display: none;"></ul>
       </div>
     `;
 
-    // Filter variants by selectedColor (assume option1 is Color, option2 is Size; but detect by name)
-    const optionNames = currentProduct.options.map((o) => o.name);
-    const colorIndex = optionNames.findIndex((n) => /color/i.test(n));
-    const sizeIndex = optionNames.findIndex((n) => /size/i.test(n));
+    // Compute valid sizes (filtered by color when applicable)
     const variants = currentProduct.variants.filter((v) => {
       if (colorIndex === -1) return true;
       const colorValue = v[`option${colorIndex + 1}`];
       return selectedColor ? colorValue === selectedColor : true;
     });
+
     const sizesSet = new Set();
     variants.forEach((v) => {
       if (sizeIndex !== -1) sizesSet.add(v[`option${sizeIndex + 1}`]);
@@ -91,86 +133,70 @@ window.addEventListener("DOMContentLoaded", () => {
     const arrowTrigger = sizeWrap.querySelector(".variant-size-select__arrow-container");
     const textSpan = sizeWrap.querySelector(".variant-size-select__text");
 
-    // Add size options to dropdown
+    // Populate size items
     sizes.forEach((size) => {
       const li = document.createElement("li");
       li.textContent = size;
       li.addEventListener("click", () => {
         selectedSize = size;
-        textSpan.textContent = size;
-        sizeWrap.classList.remove("is-open");
-        dropdown.style.display = "none";
+        setText(textSpan, size);
+        toggleDropdown(false);
 
-        // Remove selected class from all items and add to clicked one
-        dropdown
-          .querySelectorAll("li")
-          .forEach((item) => item.classList.remove("is-selected"));
+        // Mark selection
+        dropdown.querySelectorAll("li").forEach((item) => item.classList.remove("is-selected"));
         li.classList.add("is-selected");
       });
       dropdown.appendChild(li);
     });
 
-    // Toggle dropdown on trigger click
-    trigger.addEventListener("click", (e) => {
+    // Toggle dropdown using both triggers
+    const handleToggle = (e) => {
       e.stopPropagation();
       const isOpen = sizeWrap.classList.contains("is-open");
-      if (isOpen) {
-        sizeWrap.classList.remove("is-open");
-        dropdown.style.display = "none";
-      } else {
-        sizeWrap.classList.add("is-open");
-        dropdown.style.display = "block";
-      }
-    });
+      toggleDropdown(!isOpen);
+    };
+    trigger.addEventListener("click", handleToggle);
+    arrowTrigger?.addEventListener("click", handleToggle);
 
-    // Toggle dropdown on arrow container click
-    arrowTrigger?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isOpen = sizeWrap.classList.contains("is-open");
-      if (isOpen) {
-        sizeWrap.classList.remove("is-open");
-        dropdown.style.display = "none";
-      } else {
-        sizeWrap.classList.add("is-open");
-        dropdown.style.display = "block";
-      }
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener("click", (e) => {
-      if (!sizeWrap.contains(e.target)) {
-        sizeWrap.classList.remove("is-open");
-        dropdown.style.display = "none";
-      }
-    });
+    // Close dropdown when clicking outside (attach once per session)
+    if (!sizeWrap.dataset.listenerAttached) {
+      document.addEventListener("click", (e) => {
+        if (!sizeWrap.contains(e.target)) {
+          toggleDropdown(false);
+        }
+      });
+      sizeWrap.dataset.listenerAttached = "true";
+    }
   }
 
+  // Open modal and inject basic data
   function openModal(data) {
-    // Reset state each time modal opens
     selectedColor = null;
     selectedSize = null;
     if (colorWrap) colorWrap.innerHTML = "";
     if (sizeWrap) sizeWrap.innerHTML = "";
-    if (mediaImg) {
-      mediaImg.src = data.image || "";
-      mediaImg.alt = data.title || "";
-    }
-    if (titleEl) titleEl.textContent = data.title || "";
-    if (priceEl) priceEl.textContent = data.price || "";
-    if (descEl) descEl.textContent = data.description || "";
+
+    setMedia(mediaImg, data.image, data.title);
+    setText(titleEl, data.title);
+    setText(priceEl, data.price);
+    setText(descEl, data.description);
+
     modal.classList.add("is-open");
     document.addEventListener("keydown", onKeydown);
   }
 
+  // Close modal
   function closeModal() {
     modal.classList.remove("is-open");
     document.removeEventListener("keydown", onKeydown);
   }
 
+  // Accessibility: close on ESC
   function onKeydown(e) {
     if (e.key === "Escape") closeModal();
   }
 
+  // Open modal when clicking the plus icon and load product data
   grid.addEventListener("click", async (e) => {
     const plus = e.target.closest(".product-grid-hiring__grid-plus-icon");
     if (!plus) return;
@@ -185,7 +211,7 @@ window.addEventListener("DOMContentLoaded", () => {
     };
     openModal(data);
 
-    // Load product JSON by handle for variants
+    // Fetch product JSON by handle to build variant selectors
     const handle = item.getAttribute("data-handle");
     if (!handle) return;
     try {
@@ -194,36 +220,30 @@ window.addEventListener("DOMContentLoaded", () => {
       });
       if (!res.ok) throw new Error("Failed to load product");
       currentProduct = await res.json();
-      // Determine color options
-      const colorOption = currentProduct.options.find((o) =>
-        /color/i.test(o.name)
-      );
+
+      const colorOption = currentProduct.options.find((o) => /color/i.test(o.name));
       const colors = colorOption ? colorOption.values : [];
       renderColorButtons(colors);
       renderSizeOptions();
-      // Wait for user to choose a color, then sizes will render
     } catch (err) {
       console.error(err);
     }
   });
 
+  // Close modal via backdrop, close button, and clicks outside content
   backdrop?.addEventListener("click", closeModal);
   closeBtn?.addEventListener("click", closeModal);
   modal.addEventListener("click", (e) => {
     if (!content) return;
-    if (!content.contains(e.target)) {
-      closeModal();
-    }
+    if (!content.contains(e.target)) closeModal();
   });
 
-  // Add to cart handler
+  // Add to cart with color and size validations
   addToCartBtn?.addEventListener("click", async (e) => {
     e.preventDefault();
     if (!currentProduct) return;
 
-    const optionNames = currentProduct.options.map((o) => o.name);
-    const colorIndex = optionNames.findIndex((n) => /color/i.test(n));
-    const sizeIndex = optionNames.findIndex((n) => /size/i.test(n));
+    const { colorIndex, sizeIndex } = getOptionIndexes(currentProduct);
 
     // Validate selections when options exist
     if (colorIndex !== -1 && !selectedColor) {
@@ -235,7 +255,7 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Find matching variant by selected options
+    // Find the variant that matches the user's selections
     const matchingVariant = currentProduct.variants.find((v) => {
       const colorMatches =
         colorIndex === -1 || (selectedColor && v[`option${colorIndex + 1}`] === selectedColor);
@@ -249,6 +269,7 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Standard Shopify add-to-cart request
     try {
       const res = await fetch("/cart/add.js", {
         method: "POST",
@@ -260,11 +281,12 @@ window.addEventListener("DOMContentLoaded", () => {
       });
       if (!res.ok) throw new Error("Failed to add to cart");
       await res.json();
-      // Optionally close modal or give feedback
+
+      // Feedback and integration with the theme's cart UI
       closeModal();
-      // Dispatch a custom event so theme cart UI can react if listening
-      document.dispatchEvent(new CustomEvent("product:added", { detail: { variantId: matchingVariant.id } }));
-      // Redirect to cart after successful add
+      document.dispatchEvent(
+        new CustomEvent("product:added", { detail: { variantId: matchingVariant.id } })
+      );
       window.location.href = "/cart";
     } catch (err) {
       console.error(err);

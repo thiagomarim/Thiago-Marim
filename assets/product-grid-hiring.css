@@ -1,3 +1,4 @@
+/* Product Grid Hiring: container and grid */
 .product-grid-hiring__container {
   padding: 4rem 1.67rem 2.37rem 1.67rem;
 
@@ -21,6 +22,7 @@
     }
   }
 
+  /* Products grid */
   .product-grid-hiring__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -33,6 +35,7 @@
       row-gap: 2rem;
     }
 
+    /* Each grid item */
     .product-grid-hiring__grid-item {
       position: relative;
       height: 186.42px;
@@ -41,12 +44,14 @@
         height: 444px;
       }
 
+      /* Item image */
       :is(img) {
         height: 100%;
         width: 100%;
         object-fit: cover;
       }
 
+      /* Floating plus icon */
       .product-grid-hiring__grid-plus-icon {
         position: absolute;
         left: calc(var(--pos-x) * 1%);
@@ -78,6 +83,7 @@
   }
 }
 
+/* Product modal overlay */
 .product-grid-hiring__modal {
   position: fixed;
   inset: 0;
@@ -86,12 +92,14 @@
   pointer-events: none;
   z-index: 9999;
 
+  /* Visible state */
   &.is-open {
     display: block;
     opacity: 1;
     pointer-events: auto;
   }
 
+  /* Modal backdrop */
   .product-grid-hiring__modal-backdrop {
     position: fixed;
     inset: 0;
@@ -99,6 +107,7 @@
     z-index: 0;
   }
 
+  /* Modal window */
   .product-grid-hiring__modal-content {
     display: flex;
     flex-direction: column;
@@ -113,11 +122,13 @@
     box-sizing: border-box;
     z-index: 1;
 
+    /* Header area: media + basic info */
     .product-grid-hiring__modal-content__info {
       display: flex;
       gap: 0.8rem;
       align-items: end;
 
+      /* Product media */
       .product-grid-hiring__modal-content__info__media {
         width: 12rem;
         height: 14rem;
@@ -129,7 +140,9 @@
         }
       }
 
+      /* Product text details */
       .product-grid-hiring__modal-content__info__text {
+        /* Title */
         #modal-title {
           font-size: 1.6rem;
           font-weight: 300;
@@ -138,7 +151,9 @@
           margin-bottom: 2rem;
         }
 
+        /* Price */
         #modal-price {
+          font-family: var(--font-heading-family);
           font-size: 1.6rem;
           font-weight: 400;
           line-height: 120%;
@@ -146,6 +161,7 @@
           margin-bottom: 1.2rem;
         }
 
+        /* Short description */
         #modal-description {
           font-size: 1.2rem;
           font-weight: 300;
@@ -156,10 +172,15 @@
           -webkit-line-clamp: 4;
           -webkit-box-orient: vertical;
           overflow: hidden;
+
+          @media screen and (min-width: 768px) {
+            font-size: 1.4rem;
+          }
         }
       }
     }
 
+    /* Close button */
     .product-grid-hiring__modal-close {
       position: absolute;
       top: 8px;
@@ -174,6 +195,7 @@
       cursor: pointer;
     }
 
+    /* Variant selectors area */
     .product-grid-hiring__modal-content__variants {
       display: flex;
       flex-direction: column;
@@ -188,11 +210,13 @@
         margin-bottom: 0.6rem;
       }
 
+      /* Color options grid */
       .variant-color-options {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
       }
 
+      /* Color option button */
       .variant-color-btn {
         --swatch-w: 5.81px;
         border: none;
@@ -214,6 +238,7 @@
           color: #fff;
         }
 
+        /* Color swatch strip */
         .variant-color-btn__swatch {
           position: absolute;
           top: 0;
@@ -225,6 +250,7 @@
         }
       }
 
+      /* Color label */
       .variant-color-btn__label {
         flex: 1;
         text-align: left;
@@ -234,14 +260,17 @@
         letter-spacing: -2%;
       }
 
+      /* Size dropdown */
       .variant-size-select {
         position: relative;
         margin-bottom: 5rem;
 
+        /* Dropdown layout */
         .variant-size-select__container {
           display: flex;
           align-items: center;
 
+          /* Dropdown trigger */
           .variant-size-select__trigger {
             width: 100%;
             border: none;
@@ -257,6 +286,7 @@
             position: relative;
             min-height: 40.44px;
 
+            /* Selected size text */
             .variant-size-select__text {
               font-size: 1.6rem;
               font-weight: 400;
@@ -266,6 +296,7 @@
             }
           }
 
+          /* Arrow clickable area */
           .variant-size-select__arrow-container {
             width: 5.5rem;
             height: 40.44px;
@@ -276,6 +307,7 @@
             box-shadow: 0 0 0 0.5px #7b7b7b;
             cursor: pointer;
 
+            /* Arrow icon */
             .variant-size-select__arrow {
               transition: transform 0.3s ease;
               pointer-events: none;
@@ -288,6 +320,7 @@
             }
           }
 
+          /* Sizes dropdown list */
           .variant-size-select__dropdown {
             text-align: center;
             position: absolute;
@@ -304,6 +337,7 @@
             margin: 0;
             padding: 0;
 
+            /* Size option item */
             :is(li) {
               padding: 1rem 0;
               font-size: 1.6rem;
@@ -327,12 +361,14 @@
           }
         }
 
+        /* Rotate arrow when open */
         &.is-open .variant-size-select__arrow {
           transform: rotate(180deg);
         }
       }
     }
 
+    /* Primary CTA button */
     .product-grid-hiring__modal-content__actions__button {
       padding: 12px 24px;
       background-color: var(--black);
